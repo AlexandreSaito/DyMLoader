@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src * 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <title>DyMLoader</title>
+
+    <link href="./dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./styles.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+    <header class="py-3 mb-4 border-bottom">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <span href="#" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span id="page-title" class="fs-4">Nome da página</span>
+            </span>
+            <!--<form class="col-12 col-lg-auto mb-3 mb-lg-0">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+            </form>-->
+            <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                <span id="network-status" class="float-end"></span>
+            </div>
+        </div>
+    </header>
+    <main class="flex-shrink-0 ">
+        <div id="main-html" class="container-fluid">
+        </div>
+
+        <div id="main-modal" class="modal fade modal-dialog modal-dialog-centered modal-dialog-scrollable" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer mt-auto py-3">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <!--<li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>-->
+        </ul>
+        <span class="float-start" style="font-size: 8px; padding-left: 10px;">
+            Node.js: <span id="node-version"></span><br />
+            Chromium: <span id="chrome-version"></span><br />
+            Electron: <span id="electron-version"></span><br />
+        </span>
+        <!--<p class="text-center text-muted">
+            © 2022 Company, Inc
+        </p>-->
+    </footer>
+    <!-- You can also require other files to run in this process -->
+    <script src="./dist/script/bootstrap.bundle.min.js"></script>
+    <script type="module" src="./renderer.js"></script>
+</body>
+</html>

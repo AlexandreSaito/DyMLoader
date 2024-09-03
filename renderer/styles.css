@@ -1,0 +1,17 @@
+html, body {
+    height: 100%;
+  }
+  
+  /*body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+  }*/
+  
+  .connected {
+    color: green;
+  }
+  
+  .desconnected {
+    color: red;
+  }
+  

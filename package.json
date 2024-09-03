@@ -1,8 +1,8 @@
 {
-  "name": "teste",
-  "productName": "teste",
+  "name": "dymloader",
+  "productName": "dymloader",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "DyMLoader",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -20,7 +20,8 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "32.0.1"
+    "electron": "32.0.1",
+    "electron-builder": "^24.13.3"
   },
   "keywords": [],
   "author": {
@@ -29,6 +30,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-window-state": "^5.0.3"
   }
 }
