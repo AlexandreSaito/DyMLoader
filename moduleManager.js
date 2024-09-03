@@ -38,6 +38,10 @@ function forEachModule(func) {
     }
 }
 
+function getModule(name){
+    return listModules.find(x => x.name == name);
+}
+
 function forModule(name, func) {
     const cm = listModules.find(x => x.name == name);
     if (!cm) return;
@@ -83,6 +87,12 @@ function process() {
     forEachModule((cm) => { cm.eachSecond(); });
 }
 
+function getModulesName(){
+    let modules = [];
+    forEachModule((cm) => { modules.push(cm.name); });
+    return modules;
+}
+
 function createTemplate(name, type) {
     const templateFolder = path.join(__dirname, 'template');
     const projectFolder = path.join(getModuleDirectory(), name);
@@ -111,4 +121,6 @@ module.exports = {
     getMainMenu,
     getResumeOfFailtToLoad,
     createTemplate,
+    getModulesName,
+    getModule,
 };

@@ -185,7 +185,7 @@ function updateWindowMenu() {
                     click: () => {
                         // should create a folder with default parameters and open the folder
                         spaManager.requestModal({
-                            title: 'Teste',
+                            title: 'Novo Modulo',
                             body: bodyModalNewModule,
                             footer: [
                                 { role: 'modal-dismiss' },
@@ -214,6 +214,50 @@ function updateWindowMenu() {
                             }
                         });
                     },
+                },
+                {
+                    label: 'Abrir Modulo com VS Code',
+                    click: () => {
+                        spaManager.requestModal({
+                            title: 'Abrir Modulo com VS Code',
+                            body: {
+                                tag: 'div', class: 'row', children:
+                                    [
+                                        {
+                                            tag: 'div', class: 'col-12 form-group', children: [
+                                                { tag: 'label', text: 'Abrir Módulo' },
+                                                {
+                                                    tag: 'select', name: 'ddlModule', class: 'form-select', children: [
+                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x };})
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                    ]
+                            },
+                            footer: [
+                                { role: 'modal-dismiss' },
+                                { tag: 'button', type: 'button', id: 'btn-open', class: 'btn btn-success', text: 'Open' },
+                            ],
+                            on: (event, origin, data) => {
+                                if (origin == 'btn-open') {
+                                    if (!data.ddlModule) {
+                                        event.response('Modulo não especificado.');
+                                        return;
+                                    }
+                                    
+                                    const mod = moduleManager.getModule(data.ddlModule);
+                                    if(!mod){
+                                        event.response('Modulo não encontrado.');
+                                        return;
+                                    }
+
+                                    mod.openWithVSCode();
+                                    //event.response('Falha ao criar modulo.');
+                                }
+                            }
+                        });
+                    }
                 },
                 //{
                 //    label: 'Recarregar Modulo',
