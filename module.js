@@ -1,5 +1,6 @@
 const path = require('node:path');
 const fs = require('node:fs');
+const { exec } = require('child_process');
 
 const { PythonToJSMask, checkPythonEnv } = require('./modulePy');
 const { Page, setLastPage } = require('./spaManager');
@@ -41,6 +42,22 @@ class CustomModule {
 
         this.mainTemplate = { label: moduleName, click: () => { this.page = loadPage(this) } };
         this.trayTemplate = { label: moduleName, click: () => { this.page = loadPage(this) } };
+        //this.openWithVSCode();
+    }
+
+    openWithVSCode(){
+        exec(`cd /d ${this.directory} & code .`, (error, stdout, stderr) => {
+            if(error){
+                log('Error', error.message);
+                return;
+            }
+
+            if(stderr){
+                log('Stderr', stderr);
+            }
+
+            log('Output', stdout);
+        });
     }
 
     load() {
@@ -90,8 +107,6 @@ class CustomModule {
                 }
                 return;
             case '.py':
-                //this.fails.push({ message: `Extension not handled ${mainExt}.` });
-                //return;
                 checkPythonEnv(getModuleDirectory);
                 this.module = new PythonToJSMask(this.name);
                 this.isAsync = true;
@@ -187,7 +202,6 @@ class CustomModule {
     }
 
 }
-
 
 module.exports = {
     getModuleDirectory,
