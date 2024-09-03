@@ -1,4 +1,4 @@
-from py.basics import send_to_nodejs, log
+from modulepy.basics import send_to_nodejs, log
 
 class Plugin:
     def __init__(self):

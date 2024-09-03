@@ -1,5 +1,5 @@
 import inspect
-from py.basics import send_to_nodejs, log
+from modulepy.basics import send_to_nodejs, log
 
 class Page:
     def __init__(self, module_name):
