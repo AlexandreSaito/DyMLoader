@@ -1,4 +1,5 @@
 from modulepy.basics import send_to_nodejs, log
+import json
 
 class Plugin:
     def __init__(self):
@@ -14,6 +15,12 @@ class Plugin:
     def send(self, data):
         send_to_nodejs(data)
         
+    def log(self, data):
+        if type(data) is str:
+            send_to_nodejs(data)
+            return
+        send_to_nodejs(json.dumps(data))
+
     def event(self, func):
         event_name = func.__name__
         if event_name not in self._commands:
