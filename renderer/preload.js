@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
 //const { getCurrentAddon } = require('../addons.js');
 //const pageManager = require('../pageManager.js');
 
@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('api', {
     getHtmlFromModule: (fileName) => { },
     on: (channel, listener) => { ipcRenderer.on(channel, listener) },
     send: (channel, data) => { ipcRenderer.send(channel, data) },
+    utils: webUtils 
 });
 
 window.addEventListener('DOMContentLoaded', () => {
