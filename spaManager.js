@@ -46,6 +46,10 @@ class Page {
         win.webContents.send('page-request-data', { id: this.id, requestId: requestId, queryElements });
     }
 
+    modal({ title, body, footer, on }){
+        requestModal({ title: title, body: body, footer: footer, on: on });
+    }
+
 }
 
 ipcMain.on('page-loaded', (e, data) => {

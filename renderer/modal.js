@@ -63,8 +63,9 @@ export default function openModal(request) {
 
     mainModalElement.querySelector('.modal-title').innerHTML = request.title;
     if (typeof request.body === 'object') makeHtml(mainModalElement.querySelector('.modal-body'), request.body);
+    else mainModalElement.querySelector('.modal-body').innerHTML = request.body;
     if (typeof request.footer === 'object') makeHtml(mainModalElement.querySelector('.modal-footer'), request.footer);
-    else mainModalElement.querySelector('.modal-footer') = request.footer;
+    else mainModalElement.querySelector('.modal-footer').innerHTML = request.footer;
 
     mainModalElement.setAttribute('request-id', request.id);
     mainModalElement.setAttribute('request-was-send', false);

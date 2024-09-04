@@ -142,6 +142,22 @@ class Actions:
             return
 
         plugins[module_name]['plugin'].get_page().receive_data(data['request_id'], data['data'])
+        
+    def page_modal_interaction(self, module_name, data):
+        #log(f"action: unload for: {module_name}")
+        if not self.check_plugin(module_name):
+            log(f"[ModuleManager.py {module_name}] on receive_modal_interaction module not found")
+            return
+
+        if plugins[module_name]['plugin'].get_page() is None:
+            log(f"[ModuleManager.py {module_name}] on page not loaded")
+            return
+            
+        if data is None:
+            log(f"[ModuleManager.py {module_name}] data is null")
+            return
+
+        plugins[module_name]['plugin'].get_page().receive_modal_interaction(data['request_id'], data['origin'], data['data'])
 
     def page_event(self, module_name, data):
         #log(f"action: unload for: {module_name}")

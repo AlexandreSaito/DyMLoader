@@ -170,6 +170,26 @@ class PythonToJSMask {
             });
         }
 
+        if (request.action == 'page_modal') {
+            const name = this.name;
+            this.page.modal({
+                title: request.title,
+                body: request.body,
+                footer: request.footer,
+                on: (event, origin, data) => {
+                    // send to python
+                    this.responses[`modal-${request.requestId}`] = (func, data) => {
+                        event[func](data);
+                    };
+                    sendProcess(name, 'page_modal_interaction', { request_id: request.requestId, origin: origin, data: data ?? {} });
+                }
+            });
+        }
+
+        if(request.action == 'page_modal_event'){
+            this.responses[`modal-${request.requestId}`](request.function, request.data);
+        }
+
         if (request.action == 'kill') this.process.kill();
         if (request.action == 'log') log('JSON LOG', request.data);
     }
