@@ -70,25 +70,29 @@ export default function openModal(request) {
     mainModalElement.setAttribute('request-id', request.id);
     mainModalElement.setAttribute('request-was-send', false);
 
-    mainModalElement.querySelector('button:not([data-bs-dismiss])').onclick = (e) => {
-        e.preventDefault();
-
-        const target = e.currentTarget;
-        if (!target) return;
-
-        const name = target.getAttribute('name') ?? target.getAttribute('id');
-
-        const data = getFormAsData(mainModalElement);
-
-        api.send('modal-action', {
-            id: mainModalElement.getAttribute('request-id'),
-            origin: name,
-            handled: mainModalElement.getAttribute('request-was-send'),
-            data: data
+    const buttons = mainModalElement.querySelectorAll('button:not([data-bs-dismiss])');
+    if(buttons && buttons.length > 0) 
+        buttons.forEach(button => {
+            button.onclick = (e) => {
+                e.preventDefault();
+        
+                const target = e.currentTarget;
+                if (!target) return;
+        
+                const name = target.getAttribute('name') ?? target.getAttribute('id');
+        
+                const data = getFormAsData(mainModalElement);
+        
+                api.send('modal-action', {
+                    id: mainModalElement.getAttribute('request-id'),
+                    origin: name,
+                    handled: mainModalElement.getAttribute('request-was-send'),
+                    data: data
+                });
+        
+                mainModalElement.getAttribute('request-was-send', true);
+            };
         });
-
-        mainModalElement.getAttribute('request-was-send', true);
-    };
 
     mainModal.show();
 };
