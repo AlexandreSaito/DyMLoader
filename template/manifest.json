@@ -1,5 +1,5 @@
 {
-  "page": "index.html",
+  "page": "page.html",
   "start": "index.{module_type}",
   "menuName": "{module_name}",
   "trayName": "{module_name}"
