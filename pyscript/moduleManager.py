@@ -1,7 +1,7 @@
 import importlib.util, sys, os, json, inspect
-from modulepy.basics import stdout_message, send_to_nodejs, log, get_data
-from modulepy.plugin import Plugin
-from modulepy.page import Page
+from basics import stdout_message, send_to_nodejs, log, get_data
+from plugin import Plugin
+from page import Page
 
 # debug
 import builtins

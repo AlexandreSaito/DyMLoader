@@ -1,5 +1,6 @@
 const path = require('node:path')
 const fs = require('node:fs');
+const { app } = require('electron');
 const { spawn } = require('child_process');
 const { log } = require('./logger.js');
 
@@ -18,6 +19,7 @@ function setupPythonEnvironment(pluginPath) {
         // Check if virtual environment exists
         if (!fs.existsSync(venvPath)) {
             // Create virtual environment
+            log('Starting python process');
             const pythonProcess = spawn('python3', ['-m', 'venv', venvPath]);
 
             pythonProcess.on('close', (code) => {
@@ -26,18 +28,20 @@ function setupPythonEnvironment(pluginPath) {
                 }
 
                 // Install dependencies
-                const pipProcess = spawn(path.join(venvPath, 'bin', 'pip'), ['install', '-r', requirementsFile]);
+                // log('Installing dependencies');
+                // const pipProcess = spawn(path.join(venvPath, 'Scripts', 'pip'), ['install', '-r', requirementsFile]);
 
-                pipProcess.stderr.on('data', (data) => {
-                    console.error(`pip install error: ${data.toString()}`);
-                });
+                // pipProcess.stderr.on('data', (data) => {
+                //     console.error(`pip install error: ${data.toString()}`);
+                // });
 
-                pipProcess.on('close', (pipCode) => {
-                    if (pipCode !== 0) {
-                        return reject(new Error('Failed to install dependencies'));
-                    }
-                    resolve(venvPath);
-                });
+                // pipProcess.on('close', (pipCode) => {
+                //     if (pipCode !== 0) {
+                //         return reject(new Error('Failed to install dependencies'));
+                //     }
+                //     resolve(venvPath);
+                // });
+                resolve(venvPath);
             });
         } else {
             resolve(venvPath);
@@ -47,12 +51,12 @@ function setupPythonEnvironment(pluginPath) {
 
 function sendProcess(moduleName, action, data) {
     processes.push({ module: moduleName, action: action, data: data ? data : {} });
-    if (!pyMainProcess) { return; }
+    if (!pyMainProcess) { log('Python process not running!'); return; }
     actuallySendProcess();
 }
 
 function actuallySendProcess() {
-    if (!pyMainProcess || processes.length == 0) return;
+    if (!pyMainProcess || processes.length == 0) { log('Python process not running!'); return; }
     let length = processes.length;
     for (let i = 0; i < length; i++) {
         const p = processes.shift();
@@ -67,7 +71,12 @@ async function checkPythonEnv(dir) {
 
     const venvPath = await setupPythonEnvironment(dir());
     const pythonExecutable = path.join(venvPath, 'Scripts', 'python');
-    pyMainProcess = spawn(pythonExecutable, [path.join(__dirname, 'moduleManager.py')]);
+    log('Starting Manager for pyhton');
+    //pyMainProcess = spawn(pythonExecutable, ['-c', fs.readFileSync(path.join(__dirname, 'moduleManager.py'))], { stdio: ['pipe', 'pipe', 'pipe'] });
+    //pyMainProcess = spawn(pythonExecutable, [path.join(__dirname, 'moduleManager.py')], { stdio: ['pipe', 'pipe', 'pipe'] });
+    let pyscriptfolder = path.join(app.getAppPath(), '..', 'pyscript', 'moduleManager.py');
+    if (!fs.existsSync(pyscriptfolder)) pyscriptfolder = path.join(app.getAppPath(), 'pyscript', 'moduleManager.py');
+    pyMainProcess = spawn(pythonExecutable, [pyscriptfolder], { stdio: ['pipe', 'pipe', 'pipe'] });
 
     pyMainProcess.stdout.on('data', (data) => {
         readPythonResponse(data.toString());
@@ -186,7 +195,7 @@ class PythonToJSMask {
             });
         }
 
-        if(request.action == 'page_modal_event'){
+        if (request.action == 'page_modal_event') {
             this.responses[`modal-${request.requestId}`](request.function, request.data);
         }
 

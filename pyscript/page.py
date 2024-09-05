@@ -1,5 +1,5 @@
 import inspect
-from modulepy.basics import send_to_nodejs, log
+from basics import send_to_nodejs, log
 
 class ModalActions:
     def __init__(self, module_name, request_id):

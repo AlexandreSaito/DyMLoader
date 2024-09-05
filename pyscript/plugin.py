@@ -1,4 +1,4 @@
-from modulepy.basics import send_to_nodejs, log
+from basics import send_to_nodejs, log
 import json
 
 class Plugin:

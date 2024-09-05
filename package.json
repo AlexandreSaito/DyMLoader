@@ -9,6 +9,13 @@
   },
   "build": {
     "appId": "saito.dymloader",
+    "extraResources": [
+      {
+        "from": "pyscript/",
+        "to": "pyscript/",
+        "filter": ["**/*"]
+      }
+    ],
     "directories": {
       "buildResources": "."
     },
