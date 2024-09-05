@@ -31,11 +31,11 @@ const bodyModalNewModule = {
             },
             {
                 tag: 'div', class: 'col-12 form-group', children: [
-                    { tag: 'label', text: 'Nome do Módulo' },
+                    { tag: 'label', text: 'Linguagem do Módulo' },
                     {
                         tag: 'select', name: 'ddlModuleType', class: 'form-select', children: [
                             { tag: 'option', value: 'js', text: 'JavaScript' },
-                            { tag: 'option', value: 'py', text: 'Eca' }
+                            { tag: 'option', value: 'py', text: 'Python' }
                         ]
                     }
                 ]
@@ -253,7 +253,7 @@ function updateWindowMenu() {
                                     }
 
                                     mod.openWithVSCode();
-                                    //event.response('Falha ao criar modulo.');
+                                    //event.response(true);
                                 }
                             }
                         });
