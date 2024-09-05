@@ -13,7 +13,7 @@ function loadModules() {
 
     fs.readdirSync(currentDir).forEach(item => {
         if (path.extname(item) != '' || item == 'venv') return;
-        log(item);
+        log(`Loading module [${item}]`);
 
         const cm = new CustomModule(item, path.join(currentDir, item));
 
@@ -98,7 +98,7 @@ function createTemplate(name, type) {
     const projectFolder = path.join(getModuleDirectory(), name);
     if (fs.existsSync(projectFolder)) return false;
     fs.mkdirSync(projectFolder, { recursive: true });
-    fs.writeFileSync(path.join(projectFolder, 'index.html'), fs.readFileSync(path.join(templateFolder, 'index.html')));
+    fs.writeFileSync(path.join(projectFolder, 'page.html'), fs.readFileSync(path.join(templateFolder, 'page.html')));
 
     if (type == 'js') {
         fs.writeFileSync(path.join(projectFolder, 'index.js'), fs.readFileSync(path.join(templateFolder, 'index.js')).toString().replaceAll('{module_name}', name));
