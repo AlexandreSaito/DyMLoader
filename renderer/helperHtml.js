@@ -40,10 +40,12 @@ export function makeHtml(parent, elements) {
     }
 };
 
-export function getFormAsData(element) {
+export function getFormAsData(element, query) {
     const data = {};
 
-    const input = element.querySelectorAll('input, select, textArea');
+    if(!query) query = 'input, select, textArea';
+
+    const input = element.querySelectorAll(query);
 
     for (let i = 0; i < input.length; i++) {
         const e = input[i];

@@ -109,24 +109,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         console.log(args);
 
-        const data = {};
+        let data = {};
         for (let i = 0; i < args.queryElements.length; i++) {
-            const current = args.queryElements[i];
-            const el = mainHtml.querySelectorAll(current);
-            if (el.length == 0) {
-                console.log('page-request-data element not found');
-                return;
-            }
-
-            let value = '';
-            if (el.length == 1) {
-                value = el[0].type == 'checkbox' ? el[0].checked : el[0].value ?? el[0].selected;
-            }
-            if (el[0].type == 'radio') {
-                el.forEach(x => { if (x.checked) value = x.value });
-            }
-
-            data[el[0].getAttribute('name') ?? el[0].getAttribute('id')] = value;
+            data = {...data, ...getFormAsData(mainHtml, args.queryElements[i])}
         }
 
         api.send('page-data', { id: args.id, requestId: args.requestId, data: data });
