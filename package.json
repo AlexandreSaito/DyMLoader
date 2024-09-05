@@ -1,7 +1,7 @@
 {
   "name": "dymloader",
   "productName": "dymloader",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "DyMLoader",
   "scripts": {
     "start": "electron-forge start",
@@ -19,7 +19,12 @@
     "directories": {
       "buildResources": "."
     },
-    "win": {}
+    "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true
+    },
+    "win": {
+    }
   },
   "devDependencies": {
     "electron": "32.0.1",

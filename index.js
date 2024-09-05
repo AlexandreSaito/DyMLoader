@@ -17,7 +17,9 @@ const { log, setLoggerWindow } = require('./logger.js');
 //        log(e);
 //    }
 //});
-
+const appFolder = path.dirname(process.execPath)
+const updateExe = path.resolve(appFolder, '..', 'Update.exe')
+const exeName = path.basename(process.execPath)
 const iconFile = path.join(__dirname, 'renderer', 'icon.png');
 
 const bodyModalNewModule = {
@@ -136,6 +138,26 @@ function updateTrayMenu() {
 function updateWindowMenu() {
 
     let template = [
+        {
+            label: 'Opções',
+            submenu: [
+                {
+                    label: 'Iniciar ao ligar',
+                    type: 'checkbox',
+                    click: (e) => {
+                        app.setLoginItemSettings({
+                            openAtLogin: e.checked,
+                            path: updateExe,
+                            args: [
+                              '--processStart', `"${exeName}"`,
+                              '--process-start-args', '"--hidden"'
+                            ]
+                          })
+                    },
+                    checked: app.getLoginItemSettings().executableWillLaunchAtLogin,
+                }
+            ]
+        },
         {
             label: 'Ferramentas',
             submenu: [
