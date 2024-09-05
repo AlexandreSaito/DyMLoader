@@ -20,6 +20,12 @@ def handle_request(request):
         return
 
     action = request['action']
+
+    if not hasattr(actions, action):
+        log(f'[{module}]requested {action} but is not in actions')
+        #log(request)
+        return
+    
     method = getattr(actions, action)
 
     if method is None:
@@ -53,16 +59,16 @@ class Actions:
         plugins[module_name] = { 'spec': spec, 'module': module, 'plugin': Plugin() }
         module.get_plugin(plugins[module_name]['plugin'])
 
-    def init(self, module_name, data):
-        #log(f"action: init for: {module_name}")
-        if not self.check_plugin(module_name):
-            log(f"[ModuleManager.py {module_name}] on init module not found")
-            return
+    # def init(self, module_name, data):
+    #     #log(f"action: init for: {module_name}")
+    #     if not self.check_plugin(module_name):
+    #         log(f"[ModuleManager.py {module_name}] on init module not found")
+    #         return
 
-        for func in plugins[module_name]['plugin']._commands['init']:
-            func()
+    #     for func in plugins[module_name]['plugin']._commands['init']:
+    #         func()
 
-        send_to_nodejs({ 'module': module_name, 'data': { 'action': 'response', 'requested': 'init', 'status': 'ok' } })
+    #     send_to_nodejs({ 'module': module_name, 'data': { 'action': 'response', 'requested': 'init', 'status': 'ok' } })
         
     def before_page_load(self, module_name, data):
         #log(f"action: on_page_load for: {module_name}")
