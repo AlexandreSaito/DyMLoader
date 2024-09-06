@@ -15,3 +15,16 @@ html, body {
     color: red;
   }
   
+  .card .card-collapse{
+    text-decoration: none;
+    color: inherit;
+    float: right;
+    font-weight: 900;
+  }
+
+  .card .card-collapse::before{
+    content: '-';
+  }
+  .card .card-collapse.collapsed::before{
+    content: '+';
+  }
