@@ -25,8 +25,21 @@ function loadPage(cm) {
 
 class Plugin {
     constructor(){
-
+        this.templates = [];
     }
+
+    log(data){
+        log(data);
+    }
+
+    createTemplate(){
+        const template = {};
+
+        this.templates.push(template);
+
+        return template;
+    }
+
 }
 
 class CustomModule {
