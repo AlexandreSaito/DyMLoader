@@ -1,0 +1,154 @@
+
+<style>
+    code{
+        white-space: pre-wrap;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div id="HTMLObject" class="card mb-2">
+            <div class="card-header">
+                HTMLObject
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">HTMLObject is a object pattern to be trancribed to HTML elements.</h5>
+                <p class="card-text">It will be used in the followed instructions</p>
+                <code>
+{
+    tag: 'input', // required 
+    id: 'input-one', // is required for input elements
+    class: 'class-one class-two'
+    'data-attribute': 'this is a data for "attribute"'
+    children: Array<<a href="#HTMLObject">HTMLObject</a>>
+}
+{
+    <a href="#Roles">role</a>: <a href="#Roles-modal-dismiss">'modal-dismiss'</a>
+}
+              </code>
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b><a href="#Roles">role</a></b> not required, role may need some attributes. <br />
+                            'Role' at this time cannot have custom HTML attributes.
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b>tag</b> is required if role not specified.
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b>id</b> in input is required if don't have a name.
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b>name</b> in input is required if don't have a id.
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b>any other HTML attributes.</b>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card mb-2">
+            <div class="card-header">
+                Modal
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Modal is util for some popup action.</h5>
+                <code style="white-space: pre-wrap;">
+{
+    title: 'some title', // required
+    body: Array<<a href="#HTMLObject">HTMLObject</a>> | 'some text', // required
+    footer: Array<<a href="#HTMLObject">HTMLObject</a>> // required
+    on: function
+}
+              </code>
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b>on</b> Receive three parameters: event, origin, data. <br />
+                            event -> is a object with a mothod: response. (should be added more latter). <br />
+                            origin -> a name or id from which button the user clicked, is only for a footer. <br />
+                            data -> if the modal has input they will be show in 'data'. <br />
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div id="Roles" class="card mb-2">
+            <div class="card-header">
+                Roles
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Standard HTML element. 'Role' at this time cannot have custom HTML attributes.
+                </h5>
+                <code style="white-space: pre-wrap;">
+{
+    role: 'modal-dismiss'
+}
+              </code>
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b id="Roles-modal-dismiss">modal-dismiss</b> create a button to close a modal with (origin
+                            'event-close').
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b id="Roles-modal-dismiss">form</b> <br />
+                            <code>
+{
+    role: 'form'
+    children: Array<<a href="#HTMLObject">HTMLObject</a>>
+}
+                            </code>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b id="Roles-modal-dismiss">form-input</b> <br />
+                            <code>
+{
+    role: 'form-input'
+    label: 'A text' // not required
+    type: 'text' // if 'text' can be ommited
+    name: 'input-1', // required
+    col: 12 // not required, is a <a href="https://getbootstrap.com/docs/5.0/layout/columns/" target="_blank">bootstrap collumn</a>
+    children: Array<<a href="#HTMLObject">HTMLObject</a>>
+}
+                            </code>
+                            <br/>
+                            Types: text (default), textarea, number, date, datetime, datetime-local, file
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b id="Roles-modal-dismiss">form-select</b> <br />
+                            <code>
+{
+    role: 'form-select',
+    label: 'A text', // not required
+    name: 'select-1', // required
+    col: 12, // not required, is a <a href="https://getbootstrap.com/docs/5.0/layout/columns/" target="_blank">bootstrap collumn</a>
+    options: [ { label: 'one', value: '1' }, 'two' ] // can be empty array or undefined
+}
+                            </code>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
