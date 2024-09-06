@@ -7,11 +7,13 @@ export function makeHtml(parent, elements) {
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         try {
+            const el = element.role ? getElementFromRole(element.role, element) : document.createElement(element.tag);
+
             if (element.role) {
-                parent.append(getElementFromRole(element.role));
+                if (element.role == 'form' && element.children) makeHtml(el, element.children);
+                parent.append(el);
                 continue;
             }
-            const el = document.createElement(element.tag);
 
             if (element.id) el.id = element.id;
             if (element.class) el.className = element.class;
@@ -23,12 +25,6 @@ export function makeHtml(parent, elements) {
                 if (attr == 'role' || attr == 'tag' || attr == 'id' || attr == 'text' || attr == 'class' || attr == 'children') continue;
                 el.setAttribute(attr, element[attr]);
             }
-            // if (element.type) el.setAttribute('type', element.type);
-            // if (element.value) el.setAttribute('value', element.value);
-            // if (element.name) el.setAttribute('name', element.name);
-            // if (element.placeholder) el.setAttribute('placeholder', element.placeholder);
-            // if (element.style) el.setAttribute('style', element.style);
-            // if (element.accept) el.setAttribute('accept', element.accept);
 
             if (element.children) makeHtml(el, element.children);
 
