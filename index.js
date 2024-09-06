@@ -18,7 +18,7 @@ const { log, setLoggerWindow } = require('./logger.js');
 //    }
 //});
 const appFolder = path.dirname(process.execPath)
-const updateExe = path.resolve(appFolder, '..', 'Update.exe')
+const updateExe = path.resolve(appFolder, '..', 'dymloader.exe')
 const exeName = path.basename(process.execPath)
 const iconFile = path.join(__dirname, 'renderer', 'icon.png');
 
@@ -109,12 +109,6 @@ function updateTrayMenu() {
     //tray.setTitle('This is my title')
 
     let template = [
-        //{
-        //    label: 'teste',
-        //    type: 'checkbox',
-        //    checked: true,
-        //    click: (item) => { log("item", item) }
-        //},
         {
             label: 'Modulos',
             submenu: [...moduleManager.getTrayMenu()]
@@ -138,6 +132,25 @@ function updateTrayMenu() {
 function updateWindowMenu() {
 
     let template = [
+        {
+            label: 'Ajuda',
+            submenu: [
+                {
+                    label: 'HTML',
+                    click: (e) => {
+                        const page = new spaManager.Page('helper_html', 'HTML', __dirname + '/pages/helper_html/page.html');
+                        spaManager.setLastPage(page);
+                    },
+                },
+                {
+                    label: 'Plugin',
+                    click: (e) => {
+                        const page = new spaManager.Page('helper_plugin', 'Plugin', __dirname + '/pages/helper_plugin/page.html');
+                        spaManager.setLastPage(page);
+                    },
+                }
+            ]
+        },
         {
             label: 'Opções',
             submenu: [
@@ -338,6 +351,7 @@ app.on('window-all-closed', function () {
 app.on('before-quit', (e) => {
     // do not quit
     //e.preventDefault();
+    moduleManager.stopAllModules();
     log('App Quitting');
 });
 
