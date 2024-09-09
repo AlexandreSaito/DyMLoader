@@ -7,6 +7,7 @@ const moduleManager = require('./moduleManager.js');
 const { getModuleDirectory } = require('./module');
 const spaManager = require('./spaManager.js');
 const { log, setLoggerWindow } = require('./logger.js');
+const config = require('./configuration.js');
 
 //const { GlobalKeyboardListener } = require("node-global-key-listener")
 //const v = new GlobalKeyboardListener();
@@ -20,7 +21,12 @@ const { log, setLoggerWindow } = require('./logger.js');
 const appFolder = path.dirname(process.execPath)
 const updateExe = path.resolve(appFolder, '..', 'dymloader.exe')
 const exeName = path.basename(process.execPath)
-const iconFile = path.join(__dirname, 'renderer', 'icon.png');
+const iconFile = path.join(__dirname, 'icon.png');
+
+config.loadConfig();
+
+config.setDefault('dymloader-quit-on-x', false);
+config.setDefault('dymloader-open-dev-tools', false);
 
 const bodyModalNewModule = {
     tag: 'div', class: 'row', children:
@@ -96,7 +102,7 @@ function createWindow({ file, onFinishLoad, onClose }) {
     win.loadFile(file ? file : path.join(__dirname, 'renderer', '_layout.html'));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    if (config.getConfig('dymloader-open-dev-tools')) win.webContents.openDevTools();
 
     return win;
 }
@@ -110,15 +116,15 @@ function updateTrayMenu() {
 
     let template = [
         {
-            label: 'Modulos',
+            label: 'Modules',
             submenu: [...moduleManager.getTrayMenu()]
         },
         {
-            label: 'Abrir',
+            label: 'Open',
             click: () => createMainWindow(),
         },
         {
-            label: 'Sair',
+            label: 'Quit',
             click: () => app.quit(),
         }
     ];
@@ -133,10 +139,10 @@ function updateWindowMenu() {
 
     let template = [
         {
-            label: 'Ajuda',
+            label: 'Help',
             submenu: [
                 {
-                    label: 'HTML',
+                    label: 'Name to be defined.',
                     click: (e) => {
                         const page = new spaManager.Page('helper_html', 'HTML', __dirname + '/pages/helper_html/page.html');
                         spaManager.setLastPage(page);
@@ -152,27 +158,35 @@ function updateWindowMenu() {
             ]
         },
         {
-            label: 'Opções',
+            label: 'Options',
             submenu: [
                 {
-                    label: 'Iniciar ao ligar',
+                    label: 'Open on boot',
                     type: 'checkbox',
                     click: (e) => {
                         app.setLoginItemSettings({
                             openAtLogin: e.checked,
                             path: updateExe,
                             args: [
-                              '--processStart', `"${exeName}"`,
-                              '--process-start-args', '"--hidden"'
+                                '--processStart', `"${exeName}"`,
+                                '--process-start-args', '"--hidden"'
                             ]
-                          })
+                        })
                     },
                     checked: app.getLoginItemSettings().executableWillLaunchAtLogin,
+                },
+                {
+                    label: 'Quit on Close',
+                    type: 'checkbox',
+                    click: (e) => {
+                        config.setConfig('dymloader-quit-on-x', e.checked);
+                    },
+                    checked: config.getConfig('dymloader-quit-on-x'),
                 }
             ]
         },
         {
-            label: 'Ferramentas',
+            label: 'Tools',
             submenu: [
                 {
                     label: 'Console',
@@ -191,7 +205,7 @@ function updateWindowMenu() {
                     },
                 },
                 {
-                    label: 'Recarregar',
+                    label: 'Reload',
                     role: 'reload',
                     //accelerator: 'Ctrl+F5'
                     accelerator: 'F5'
@@ -207,20 +221,20 @@ function updateWindowMenu() {
             ]
         },
         {
-            label: 'Modulos',
+            label: 'Modules',
             submenu: [
                 {
-                    label: 'Abrir Pasta',
+                    label: 'Open Folder',
                     click: () => {
                         shell.openPath(getModuleDirectory());
                     },
                 },
                 {
-                    label: 'Novo Modulo',
+                    label: 'New Module',
                     click: () => {
                         // should create a folder with default parameters and open the folder
                         spaManager.requestModal({
-                            title: 'Novo Modulo',
+                            title: 'New Module',
                             body: bodyModalNewModule,
                             footer: [
                                 { role: 'modal-dismiss' },
@@ -229,11 +243,11 @@ function updateWindowMenu() {
                             on: (event, origin, data) => {
                                 if (origin == 'btn-save') {
                                     if (!data.txtModuleName) {
-                                        event.response('Falha ao criar modulo. Informe um nome.');
+                                        event.response('Failed to create module, inform the name.');
                                         return;
                                     }
                                     if (data.txtModuleName.trim().includes(' ') || data.txtModuleName.includes('\\') || data.txtModuleName.includes('/')) {
-                                        event.response('Falha ao criar modulo. O nome não pode conter espaços e/ou "/"/"\\".');
+                                        event.response('Failed to create module, the name should\'t have spaces or "/"/"\\".');
                                         return;
                                     }
 
@@ -251,19 +265,19 @@ function updateWindowMenu() {
                     },
                 },
                 {
-                    label: 'Abrir Modulo com VS Code',
+                    label: 'Open Module with VS Code',
                     click: () => {
                         spaManager.requestModal({
-                            title: 'Abrir Modulo com VS Code',
+                            title: 'Open Module with VS Code',
                             body: {
                                 tag: 'div', class: 'row', children:
                                     [
                                         {
                                             tag: 'div', class: 'col-12 form-group', children: [
-                                                { tag: 'label', text: 'Abrir Módulo' },
+                                                { tag: 'label', text: 'Open Module' },
                                                 {
                                                     tag: 'select', name: 'ddlModule', class: 'form-select', children: [
-                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x };})
+                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; })
                                                     ]
                                                 }
                                             ]
@@ -277,13 +291,13 @@ function updateWindowMenu() {
                             on: (event, origin, data) => {
                                 if (origin == 'btn-open') {
                                     if (!data.ddlModule) {
-                                        event.response('Modulo não especificado.');
+                                        event.response('Module not found.');
                                         return;
                                     }
-                                    
+
                                     const mod = moduleManager.getModule(data.ddlModule);
-                                    if(!mod){
-                                        event.response('Modulo não encontrado.');
+                                    if (!mod) {
+                                        event.response('Module not found.');
                                         return;
                                     }
 
@@ -301,7 +315,7 @@ function updateWindowMenu() {
                 //    },
                 //},
                 {
-                    label: 'Recarregar Todos Modulos',
+                    label: 'Reload All Modules',
                     click: () => {
                         // should reload all modules
                         moduleManager.stopAllModules();
@@ -346,11 +360,13 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
     //if (process.platform !== 'darwin') app.quit()
+    if (config.getConfig('dymloader-quit-on-x')) app.quit();
 });
 
 app.on('before-quit', (e) => {
     // do not quit
     //e.preventDefault();
+    config.saveConfig();
     moduleManager.stopAllModules();
     log('App Quitting');
 });

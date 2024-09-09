@@ -14,6 +14,11 @@
         "from": "pyscript/",
         "to": "pyscript/",
         "filter": ["**/*"]
+      },
+      {
+        "from": "modules/",
+        "to": "modules/",
+        "filter": ["**/*"]
       }
     ],
     "directories": {
@@ -24,6 +29,7 @@
         "allowToChangeInstallationDirectory": true
     },
     "win": {
+      "target": "nsis"
     }
   },
   "devDependencies": {
