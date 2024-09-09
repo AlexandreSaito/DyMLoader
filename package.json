@@ -1,11 +1,12 @@
 {
   "name": "dymloader",
   "productName": "dymloader",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "DyMLoader",
   "scripts": {
     "start": "electron-forge start",
-    "win": "electron-builder -w"
+    "win": "electron-builder -w",
+    "release": "electron-builder -w -p \"onTagOrDraft\""
   },
   "build": {
     "appId": "saito.dymloader",
@@ -13,22 +14,36 @@
       {
         "from": "pyscript/",
         "to": "pyscript/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "modules/",
         "to": "modules/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "data/",
+        "to": "data/",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "directories": {
       "buildResources": "."
     },
     "nsis": {
-        "oneClick": false,
-        "allowToChangeInstallationDirectory": true
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     },
     "win": {
+      "publish": [
+        "github"
+      ],
       "target": "nsis"
     }
   },
@@ -43,6 +58,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "electron-updater": "^6.3.4",
     "electron-window-state": "^5.0.3"
   }
 }
