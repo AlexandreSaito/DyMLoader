@@ -39,7 +39,7 @@ def handle_request(request):
 
 class Actions:
     def check_plugin(self, module_name):
-        return module_name in plugins;
+        return module_name in plugins
 
     def setup(self, module_name, data):
         #log(f"action: setup for: {module_name}")
