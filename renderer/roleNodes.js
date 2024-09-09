@@ -70,10 +70,15 @@ const roleNodes = {
         return node;
     },
     'table': (data) => {
+        const node = document.createElement('div');
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+
+        node.className = input.col ? `col-${input.col}` : 'col';
         const columns = data.columns;
         if (!columns) return;
 
-        const table = document.createElement('table');
         table.className = "table table-bordered table-dark table-striped table-hover table-sm table-responsive caption-top";
 
         if (data.caption) {
@@ -89,7 +94,19 @@ const roleNodes = {
             line.append(th)
         });
 
-        return table;
+        if (data.id) {
+            tbody.id = data.id;
+        }
+        if (data.name) {
+            tbody.name = data.name;
+        }
+
+        thead.append(line);
+        table.append(thead);
+        table.append(tbody);
+        node.append(table);
+
+        return node;
     },
 };
 
