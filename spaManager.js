@@ -94,7 +94,7 @@ ipcMain.on('page-event', (e, data) => {
         const match = data.matches[i];
         if (event[match.name]) {
             for (var j = 0; j < event[match.name].length; j++) {
-                event[match.name][j](match.value);
+                event[match.name][j](match.value, match.dataset);
             }
         }
     }

@@ -36,9 +36,9 @@ function addEventListener(element, event) {
             const current = eventRegistered[event];
             if (!current) return;
             let match = current.filter(x => e.target.matches(x)).map(x => {
-                const selector = element.querySelectorAll(x);
-
-                return { name: x, value: selector.length == 1 ? (selector[0].type == 'checkbox' ? selector[0].checked : selector[0].value ?? selector[0].selected) : selector[0].type == 'radio' ? (() => { let val = null; selector.forEach(y => { if (y.checked) val = y.value }); return val; })() : '' }
+                const selector = e.target.type == 'checkbox' || e.target.type == 'radio' ? element.querySelectorAll(x) : [e.target];
+                const data =  selector[0].dataset;
+                return { name: x, dataset: data, value: selector.length == 1 ? (selector[0].type == 'checkbox' ? selector[0].checked : selector[0].value ?? selector[0].selected) : selector[0].type == 'radio' ? (() => { let val = null; selector.forEach(y => { if (y.checked) { val = y.value } }); return val; })() : '' }
             });
             //console.log(match);
             api.send('page-event', { id: mainHtml.getAttribute('module-page'), event: event, matches: match, value: null });
@@ -56,7 +56,6 @@ function delegate_event(element, event, query) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-
     if (logger) {
         api.on('log', (e, args) => {
             log(args);

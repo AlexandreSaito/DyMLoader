@@ -4,6 +4,147 @@
         white-space: pre-wrap;
     }
 </style>
+<style>
+    code {
+        white-space: pre-wrap;
+    }
+</style>
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pills-js-tab" data-bs-toggle="pill" data-bs-target="#pills-js" type="button"
+            role="tab" aria-controls="pills-js" aria-selected="true">JavaScript</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-py-tab" data-bs-toggle="pill" data-bs-target="#pills-py" type="button"
+            role="tab" aria-controls="pills-py" aria-selected="false">Python</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-js" role="tabpanel" aria-labelledby="pills-js-tab">
+        <div class="row">
+            <div class="col-12">
+                <h3>JavaScript</h3>
+            </div>
+            <div class="col-12">
+                <div class="card mb-2">
+                    <div class="card-header">Plugin</div>
+                    <div class="card-body">
+                        <ol class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>plugin.init</b> <br />Is executed when the module is loaded, can be used to
+                                    change tray.
+                                    <code>
+plugin.init = (trayMenu, mainMenu) => {
+    // do something
+}
+                                    </code>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>plugin.onPageLoad</b> <br />Is executed when page is done loading. It will
+                                    receive a <a href="#Page">page</a> class.
+                                    <code>
+plugin.onPageLoad = (<a href="#Page">page</a>) => {
+    // do something
+}
+                                    </code>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>plugin.beforePageClose</b> <br />Is executed when page is closing. It will
+                                    receive a <a href="#Page">page</a> class.
+                                    <code>
+plugin.beforePageClose = (<a href="#Page">page</a>) => {
+    // do something
+}
+                                    </code>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>plugin.onPageClose</b> <br />Is executed after the page closes.
+                                    <code>
+plugin.onPageClose = () => {
+    // do something
+}
+                                    </code>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>plugin.beforeQuit</b> <br />Is executed when app is closing or module is
+                                    reloading.
+                                    <code>
+plugin.beforeQuit = () => {
+    // do something
+}
+                                    </code>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>plugin.log</b> <br /> log at console.
+                                    <code>
+plugin.log('hi!');
+                                    </code>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card mb-2">
+                    <div class="card-header">Page</div>
+                    <div class="card-body">
+                        <ol class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>page.addEventListener(event, query, function)</b> <br /> Add a event to a element.
+                                    <code>
+page.addEventListener('click', '#btn-1', () => {
+    plugin.log('button clicked!') 
+});
+                                    </code>
+                                    <br/>
+If the event is on a input may get the input value
+                                    <code>
+page.addEventListener('change', '#select-1', (value) => {
+    plugin.log(`select has a value! ${value}`) 
+});
+                                    </code>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <b>page.loadHtml(query, option)</b> <br /> Load HTML to the parent specified on query
+                                    <code>
+page.loadHtml('#element', {
+    clearBeforeRender: true, // can be ommited (default is true)
+    fileOrHtml: string (absolute file path) | Array<<a href="#HTMLObject">HTMLObject</a>>
+});
+                                    </code>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pills-py" role="tabpanel" aria-labelledby="pills-py-tab">
+        <div class="row">
+            <div class="col-12">
+                <h3>Python</h3>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-12">
@@ -16,8 +157,9 @@
                 <p class="card-text">It will be used in the followed instructions</p>
                 <code>
 {
-    tag: 'input', // required 
+    tag: 'input', // required if isn't a role
     id: 'input-one', // is required for input elements
+    text: 'hi' // shown as text inside of element
     class: 'class-one class-two'
     'data-attribute': 'this is a data for "attribute"'
     children: Array<<a href="#HTMLObject">HTMLObject</a>>
@@ -58,37 +200,9 @@
         </div>
     </div>
     <div class="col-12">
-        <div class="card mb-2">
-            <div class="card-header">
-                Modal
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Modal is util for some popup action.</h5>
-                <code style="white-space: pre-wrap;">
-{
-    title: 'some title', // required
-    body: Array<<a href="#HTMLObject">HTMLObject</a>> | 'some text', // required
-    footer: Array<<a href="#HTMLObject">HTMLObject</a>> // required
-    on: function
-}
-              </code>
-                <ol class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <b>on</b> Receive three parameters: event, origin, data. <br />
-                            event -> is a object with a mothod: response. (should be added more latter). <br />
-                            origin -> a name or id from which button the user clicked, is only for a footer. <br />
-                            data -> if the modal has input they will be show in 'data'. <br />
-                        </div>
-                    </li>
-                </ol>
-            </div>
-        </div>
-    </div>
-    <div class="col-12">
         <div id="Roles" class="card mb-2">
             <div class="card-header">
-                Roles
+                HTMLObject - <b>Roles</b>
             </div>
             <div class="card-body">
                 <h5 class="card-title">Standard HTML element. 'Role' at this time cannot have custom HTML attributes.
@@ -145,6 +259,49 @@
     options: [ { label: 'one', value: '1' }, 'two' ] // can be empty array or undefined
 }
                             </code>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b id="Roles-modal-dismiss">table</b> <br />
+                            <code>
+{
+    role: 'table',
+    id: 'select-1', // required if not inform NAME
+    name: 'select-1', // required if not inform ID
+    col: 12, // not required, is a <a href="https://getbootstrap.com/docs/5.0/layout/columns/" target="_blank">bootstrap collumn</a>
+    caption: 'A table of something' // not required
+    columns: Array&lt;string&gt; // required
+}
+                            </code>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card mb-2">
+            <div class="card-header">
+                Modal
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Modal is util for some popup action.</h5>
+                <code style="white-space: pre-wrap;">
+{
+    title: 'some title', // required
+    body: Array<<a href="#HTMLObject">HTMLObject</a>> | 'some text', // required
+    footer: Array<<a href="#HTMLObject">HTMLObject</a>> // required
+    on: function
+}
+              </code>
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <b>on</b> Receive three parameters: event, origin, data. <br />
+                            event -> is a object with a mothod: response. (should be added more latter). <br />
+                            origin -> a name or id from which button the user clicked, is only for a footer. <br />
+                            data -> if the modal has input they will be show in 'data'. <br />
                         </div>
                     </li>
                 </ol>

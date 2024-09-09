@@ -147,13 +147,6 @@ function updateWindowMenu() {
                         const page = new spaManager.Page('helper_html', 'HTML', __dirname + '/pages/helper_html/page.html');
                         spaManager.setLastPage(page);
                     },
-                },
-                {
-                    label: 'Plugin',
-                    click: (e) => {
-                        const page = new spaManager.Page('helper_plugin', 'Plugin', __dirname + '/pages/helper_plugin/page.html');
-                        spaManager.setLastPage(page);
-                    },
                 }
             ]
         },

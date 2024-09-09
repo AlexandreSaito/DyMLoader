@@ -7,7 +7,7 @@ html_load_options = {
     'clear_before_render': True #can be omitted, default: True  
 }
 
-# This is a require funcion to run properly
+# This is a required function to run properly
 def get_plugin(plugin): 
     plugin.log('{module_name} is initializing')
 
@@ -20,7 +20,7 @@ def get_plugin(plugin):
        
     # Execute when the render process end (page is done loading)
     @plugin.event
-    def on_page_load(page): # This method should receive a page class witch will bridge the front-end (page) to back-end (this script)
+    def on_page_load(page): # This method should receive a page instance witch will bridge the front-end (page) to back-end (this script)
         plugin.log('{module_name} on_page_load') 
         
         # To render a HTML call page.load_html passing query string to element and a HTML string or JSON (Check HTMLObject in [helper] -> HTMLObject)
@@ -28,14 +28,14 @@ def get_plugin(plugin):
 
         # @page.event_listener register a event for a especific HTML element, differently of @plugin.event they don't need to have a specific name
 
-        # Adding event on button with id 'btn-1' witch is 'Get Data!' button on page.html
+        # Adding event on button with id 'btn-1' which is 'Get Data!' button on page.html
         @page.event_listener('click', '#btn-1')
         def print_when_click():
             plugin.log(f"'#btn-1' was clicked")
             # After the button is clicked it will request data from inputs, passing a callback 'when_receive_data'
             page.get_data([ '#text-1', '#select-1', 'input[name="rdb-1"]', '#chk-1', '#inputFile' ], when_receive_data)
         
-        # Adding event on button with id 'btn-2' witch is 'Open Modal!' button on page.html
+        # Adding event on button with id 'btn-2' which is 'Open Modal!' button on page.html
         @page.event_listener('click', '#btn-2')
         def btn_open_modal():
             plugin.log(f"'#btn-2' was clicked")
@@ -49,7 +49,7 @@ def get_plugin(plugin):
                 'on': when_modal_event_happend,
             })
 
-        # Adding event on button with id 'btn-3' witch is 'Open Modal With Form!' button on page.html
+        # Adding event on button with id 'btn-3' which is 'Open Modal With Form!' button on page.html
         @page.event_listener('click', '#btn-3')
         def btn_open_modal_with_form():
             plugin.log(f"'#btn-3' was clicked")
@@ -64,24 +64,24 @@ def get_plugin(plugin):
                 'on': when_modal_event_happend,
             })
 
-        # Adding event on button with id 'btn-3' witch is 'Open Modal With Form!' button on page.html
+        # Adding event on button with id 'btn-3' which is 'Open Modal With Form!' button on page.html
         @page.event_listener('change', '#select-1')
         def print_when_click(data):
             plugin.log(f"'#select-1' value has changed to {data}")
             # After the select has their value changed load a html
-            page.load_html('#list-data-getted', [ { 'tag': 'div', 'text': f"'#select-1' value has changed to {data}" } ], html_load_options )
+            page.load_html('#list-data-gotten', [ { 'tag': 'div', 'text': f"'#select-1' value has changed to {data}" } ], html_load_options )
             
         @page.event_listener('change', 'input[name="rdb-1"]')
         def print_when_rdb_change(data):
             plugin.log(f"radio value has changed to {data}")
             # After the radio has their value changed load a html
-            page.load_html('#list-data-getted', [ { 'tag': 'div', 'text': f"radio value has changed to {data}" } ], html_load_options )
+            page.load_html('#list-data-gotten', [ { 'tag': 'div', 'text': f"radio value has changed to {data}" } ], html_load_options )
             
         @page.event_listener('change', '#chk-1')
         def print_when_chk_change(data):
             plugin.log(f"check value has changed to {data}")
             # After the checkbox has their value changed load a html
-            page.load_html('#list-data-getted', [ { 'tag': 'div', 'text': f"check value has changed to {data}" } ], html_load_options )
+            page.load_html('#list-data-gotten', [ { 'tag': 'div', 'text': f"check value has changed to {data}" } ], html_load_options )
             
     # Execute when the user close the app window or change paged
     @plugin.event
@@ -93,11 +93,10 @@ def get_plugin(plugin):
     def before_quit(): 
         plugin.log('{module_name} before_quit') 
        
-
     # function called on page listener
     def when_receive_data(page, data):
         plugin.log(f"data received: {json.dumps(data)}")
-        page.load_html('#list-data-getted', [ { 'tag': 'div', 'text': f"data received: {json.dumps(data)}" } ], html_load_options)
+        page.load_html('#list-data-gotten', [ { 'tag': 'div', 'text': f"data received: {json.dumps(data)}" } ], html_load_options)
         
     # function called on page listener
     def when_modal_event_happend(page, event, origin, data):

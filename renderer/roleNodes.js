@@ -24,7 +24,7 @@ const roleNodes = {
             inputNode = document.createElement('input');
             inputNode.setAttribute('type', input.type);
         }
-        if(input.type == 'file' && input.accept){
+        if (input.type == 'file' && input.accept) {
             inputNode.setAttribute('accept', input.accept);
         }
         inputNode.className = 'form-control';
@@ -57,7 +57,7 @@ const roleNodes = {
         if (input.options && Array.isArray(input.options)) {
             for (let i = 0; i < input.options; i++) {
                 const opt = document.createElement('option');
-                if(typeof input.options == 'string') {
+                if (typeof input.options == 'string') {
                     input.options = { value: input.options, label: input.options };
                 }
                 opt.value = input.options.value;
@@ -68,7 +68,46 @@ const roleNodes = {
         node.append(inputNode);
 
         return node;
-    }
+    },
+    'table': (data) => {
+        const node = document.createElement('div');
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+
+        node.className = input.col ? `col-${input.col}` : 'col';
+        const columns = data.columns;
+        if (!columns) return;
+
+        table.className = "table table-bordered table-dark table-striped table-hover table-sm table-responsive caption-top";
+
+        if (data.caption) {
+            const caption = document.createElement('caption');
+            caption.innerHTML = data.caption;
+            table.append(caption);
+        }
+
+        const line = document.createElement('tr');
+        columns.forEach(x => {
+            const th = document.createElement('th');
+            th.innerHTML = x;
+            line.append(th)
+        });
+
+        if (data.id) {
+            tbody.id = data.id;
+        }
+        if (data.name) {
+            tbody.name = data.name;
+        }
+
+        thead.append(line);
+        table.append(thead);
+        table.append(tbody);
+        node.append(table);
+
+        return node;
+    },
 };
 
 
