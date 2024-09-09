@@ -20,7 +20,7 @@ const { log, setLoggerWindow } = require('./logger.js');
 const appFolder = path.dirname(process.execPath)
 const updateExe = path.resolve(appFolder, '..', 'dymloader.exe')
 const exeName = path.basename(process.execPath)
-const iconFile = path.join(__dirname, 'renderer', 'icon.png');
+const iconFile = path.join(__dirname, 'icon.png');
 
 const bodyModalNewModule = {
     tag: 'div', class: 'row', children:
