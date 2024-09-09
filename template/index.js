@@ -14,7 +14,7 @@ function getPlugin(plugin) {
         page.addEventListener('click', '#btn-1', () => {
             plugin.log("'#btn-1' was clicked");
             page.getData(['#text-1', '#select-1', 'input[name="rdb-1"]', '#chk-1', '#inputFile'], (data) => {
-                page.loadHtml('#list-data-getted', {
+                page.loadHtml('#list-data-gotten', {
                     clearBeforeRender: false, // Can be ommited, default: true
                     fileOrHtml: [{ tag: 'div', text: `data received: ${JSON.stringify(data)}` }]
                 });
@@ -70,7 +70,7 @@ function getPlugin(plugin) {
             plugin.log(`check value has changed to ${data}`)
         });
 
-        page.loadHtml('#list-data-getted', {
+        page.loadHtml('#list-data-gotten', {
             clearBeforeRender: false, // Can be ommited, default: true
             fileOrHtml: [{ tag: 'div', text: 'Content Load from script!' }]
         });
