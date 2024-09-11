@@ -1,6 +1,6 @@
 const path = require('node:path');
 const fs = require('node:fs');
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 
 const { PythonToJSMask, checkPythonEnv } = require('./modulePy');
 const { Page, setLastPage } = require('./spaManager');
@@ -30,14 +30,6 @@ class Plugin {
 
     log(data){
         log(data);
-    }
-
-    createTemplate(){
-        const template = {};
-
-        this.templates.push(template);
-
-        return template;
     }
 
 }
@@ -111,8 +103,57 @@ class CustomModule {
         switch (mainExt) {
             case '.js':
                 try {
+                    const requirementsFile = path.join(this.directory, 'requirements.txt');
+                    const packageFile = path.join(this.directory, 'package.json');
+                    if(fs.existsSync(requirementsFile)){
+                        try{
+                            const pluginDir = this.directory;
+                            const dependencies = fs.readFileSync(requirementsFile).toString().split('\n');
+                            const pack = JSON.parse(fs.readFileSync(packageFile).toString());
+                            dependencies.forEach(dep => {
+                                if (!pack.dependencies[dep]) {
+                                    log(`Installing ${dep}...`);
+                                    execSync(`npm install ${dep}`, { stdio: 'inherit', cwd: pluginDir });
+                                } else {
+                                    log(`${dep} is already installed.`);
+                                }
+                            });
+                        }catch(e){
+                            log(e);
+                        }
+                    }
+
+                    let mod = undefined;
+                    while(mod == undefined){
+                        try{
+                            mod = require(mainFilePath);
+                        }catch(e){
+                            log(e);
+                            if(e.code == 'MODULE_NOT_FOUND') {
+                                if(!e.message.startsWith('Cannot find module')){
+                                    this.fails.push({ message: e.message });
+                                    return;
+                                }
+                                let f = e.message.indexOf("'") + 1;
+                                let l = e.message.indexOf("'", f);
+                                const toInstall = e.message.substr(f, l - f);
+                                if(toInstall.startsWith('/') || toInstall.startsWith('\\') || toInstall.startsWith('.')){
+                                    this.fails.push({ message: e.message });
+                                    return;
+                                }
+
+                                execSync(`npm install ${toInstall}`, { stdio: 'inherit', cwd: this.directory });
+                                continue;
+                            }
+                        }
+                    }
+                    
+                    if(!mod){
+                        this.fails.push({ message: 'Something has gone wrong when loading module!' });
+                        return;
+                    }
                     const plugin = new Plugin();
-                    require(mainFilePath).getPlugin(plugin);
+                    mod.getPlugin(plugin);
                     this.module = plugin;
                     this.module.log = log;
                 } catch (e) {

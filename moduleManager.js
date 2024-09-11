@@ -97,19 +97,24 @@ function createTemplate(name, type) {
     const templateFolder = path.join(__dirname, 'template');
     const projectFolder = path.join(getModuleDirectory(), name);
     if (fs.existsSync(projectFolder)) return false;
+
+    const writeFile = (fileName, fileFrom) => {
+        fs.writeFileSync(fileName, fs.readFileSync(fileFrom).toString().replaceAll('{module_name}', name).replaceAll('{module_type}', type));
+    };
+
     fs.mkdirSync(projectFolder, { recursive: true });
-    fs.writeFileSync(path.join(projectFolder, 'page.html'), fs.readFileSync(path.join(templateFolder, 'page.html')));
+    writeFile(path.join(projectFolder, 'page.html'), path.join(templateFolder, 'page.html'));
+    writeFile(path.join(projectFolder, 'manifest.json'), path.join(templateFolder, 'manifest.json'));
+    writeFile(path.join(projectFolder, 'requirements.txt'), path.join(templateFolder, 'requirements.txt'));
 
     if (type == 'js') {
-        fs.writeFileSync(path.join(projectFolder, 'index.js'), fs.readFileSync(path.join(templateFolder, 'index.js')).toString().replaceAll('{module_name}', name));
+        writeFile(path.join(projectFolder, 'index.js'), path.join(templateFolder, 'index.js'));
+        writeFile(path.join(projectFolder, 'package.json'), path.join(templateFolder, 'package.json'));
     }
 
     if (type == 'py') {
-        fs.writeFileSync(path.join(projectFolder, 'index.py'), fs.readFileSync(path.join(templateFolder, 'index.py')).toString().replaceAll('{module_name}', name));
-        //fs.writeFileSync(path.join(projectFolder, 'requirements.txt'), fs.readFileSync(path.join(templateFolder, 'requirements.txt')));
+        writeFile(path.join(projectFolder, 'index.py'), path.join(templateFolder, 'index.py'));
     }
-
-    fs.writeFileSync(path.join(projectFolder, 'manifest.json'), fs.readFileSync(path.join(templateFolder, 'manifest.json')).toString().replaceAll('{module_name}', name).replaceAll('{module_type}', type));
 
     return projectFolder;
 }

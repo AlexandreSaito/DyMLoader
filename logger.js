@@ -16,8 +16,15 @@ function log(...args) {
     }
 }
 
+function logProcess(...args){
+    console.log('\r\n----/----');
+    for (let arg of args) {
+        console.log(typeof arg == 'object' ? JSON.stringify(arg) : arg);
+    }
+}
+
 function setLoggerWindow(window) {
     win = window;
 }
 
-module.exports = { log, setLoggerWindow }
+module.exports = { log, logProcess, setLoggerWindow }
