@@ -31,6 +31,15 @@
                 <h3>JavaScript</h3>
             </div>
             <div class="col-12">
+                The DyMLoader will handle any dependencies that you use in your module (it will try to download via npm), 
+                BUT if you dinamically load a dependencie, you will need to specify that on 'requirements.txt' like: 
+                <code>
+dependencie-one
+dependencie-two
+                </code>
+                To reinstall a dependency remove them from package.json
+            </div>
+            <div class="col-12">
                 <div class="card mb-2">
                     <div class="card-header">Plugin</div>
                     <div class="card-body">
