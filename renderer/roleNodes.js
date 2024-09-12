@@ -75,6 +75,13 @@ const roleNodes = {
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
 
+        if (data.id) {
+            tbody.id = data.id;
+        }
+        if (data.name) {
+            tbody.name = data.name;
+        }
+        
         node.className = input.col ? `col-${input.col}` : 'col';
         const columns = data.columns;
         if (!columns) return;
@@ -94,12 +101,6 @@ const roleNodes = {
             line.append(th)
         });
 
-        if (data.id) {
-            tbody.id = data.id;
-        }
-        if (data.name) {
-            tbody.name = data.name;
-        }
 
         thead.append(line);
         table.append(thead);
