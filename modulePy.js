@@ -2,13 +2,12 @@ const path = require('node:path')
 const fs = require('node:fs');
 const { app } = require('electron');
 const { spawn } = require('child_process');
-const { log } = require('./logger.js');
+const { log, logProcess } = require('./logger.js');
 
 let processes = [];
 let pyMainProcess = null;
 
 const mods = {};
-
 
 //https://chatgpt.com/c/d6b54e18-103a-4536-b015-7fb09d35dd22
 function setupPythonEnvironment(pluginPath) {
@@ -72,11 +71,17 @@ async function checkPythonEnv(dir) {
     const venvPath = await setupPythonEnvironment(dir());
     const pythonExecutable = path.join(venvPath, 'Scripts', 'python');
     log('Starting Manager for pyhton');
-    //pyMainProcess = spawn(pythonExecutable, ['-c', fs.readFileSync(path.join(__dirname, 'moduleManager.py'))], { stdio: ['pipe', 'pipe', 'pipe'] });
-    //pyMainProcess = spawn(pythonExecutable, [path.join(__dirname, 'moduleManager.py')], { stdio: ['pipe', 'pipe', 'pipe'] });
+    
     let pyscriptfolder = path.join(app.getAppPath(), '..', 'pyscript', 'moduleManager.py');
     if (!fs.existsSync(pyscriptfolder)) pyscriptfolder = path.join(app.getAppPath(), 'pyscript', 'moduleManager.py');
     pyMainProcess = spawn(pythonExecutable, [pyscriptfolder], { stdio: ['pipe', 'pipe', 'pipe'] });
+
+    // fs.chmod(path.join(app.getAppPath(), '..', 'modules'), 0o755, (err) => {
+    //     if (err) {
+    //       console.error(`Error setting permissions: ${err.message}`);
+    //       return;
+    //     }
+    // });
 
     pyMainProcess.stdout.on('data', (data) => {
         readPythonResponse(data.toString());
@@ -96,7 +101,7 @@ async function checkPythonEnv(dir) {
 }
 
 function readPythonResponse(data) {
-    log('Python package: ', data);
+    logProcess('Python package: ', data);
     const lines = data.split('\n');
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
@@ -105,9 +110,8 @@ function readPythonResponse(data) {
         try {
             const json = JSON.parse(line.trim());
             handlePyRequest(json);
-            //log(json);
         } catch (e) {
-            log(`Python Message: ${line}`);
+            logProcess(`Python Message: ${line}`);
         }
     }
 }
