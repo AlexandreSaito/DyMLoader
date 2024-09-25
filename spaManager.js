@@ -123,6 +123,10 @@ function setWindow(window) {
     return currentPage;
 }
 
+function hasPageLoaded(){
+    return lastPage != null && lastPage != undefined;
+}
+
 function setLastPage(page) { lastPage = page; }
 
 function loadPage(id, title, { filePath, html }) {
@@ -150,6 +154,7 @@ function requestModal({ title, body, footer, on }) {
 module.exports = {
     Page,
     setWindow,
+    hasPageLoaded,
     setLastPage,
     loadLastPage,
     requestModal,

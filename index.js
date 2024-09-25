@@ -54,12 +54,21 @@ const bodyModalNewModule = {
 let tray = null;
 let mainWindow = null, logWindow = null;
 
+function loadMainPage(){
+    const page = new spaManager.Page('main', 'DyMLoader!', __dirname + '/pages/main/page.html');
+    spaManager.setLastPage(page);
+}
+
 function createMainWindow() {
     if (mainWindow) return;
     mainWindow = createWindow({
         onFinishLoad: () => {
             mainWindow.webContents.send('on-load', { failedModules: moduleManager.getResumeOfFailtToLoad() });
             spaManager.setWindow(mainWindow);
+            if(!spaManager.hasPageLoaded()) {
+                loadMainPage();
+                return;
+            }
             spaManager.loadLastPage();
         },
         onClose: () => { mainWindow = null; spaManager.setWindow(mainWindow); }
@@ -112,7 +121,6 @@ function updateTrayMenu() {
     if (!tray) tray = new Tray(iconFile);
 
     tray.setToolTip('DyMLoader!');
-    //tray.setTitle('This is my title')
 
     let template = [
         {
@@ -139,12 +147,18 @@ function updateWindowMenu() {
 
     let template = [
         {
+            label: 'Main',
+            click: () => {
+                loadMainPage();
+            }
+        },
+        {
             label: 'Help',
             submenu: [
                 {
                     label: 'Name to be defined.',
                     click: (e) => {
-                        const page = new spaManager.Page('helper_html', 'HTML', __dirname + '/pages/helper_html/page.html');
+                        const page = new spaManager.Page('helper_html', 'Name to be defined.', __dirname + '/pages/helper_html/page.html');
                         spaManager.setLastPage(page);
                     },
                 }
@@ -270,7 +284,8 @@ function updateWindowMenu() {
                                                 { tag: 'label', text: 'Open Module' },
                                                 {
                                                     tag: 'select', name: 'ddlModule', class: 'form-select', children: [
-                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; })
+                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; }),
+                                                        ...moduleManager.getResumeOfFailtToLoad().map(x => { return { tag: 'option', value: x, text: x }; }),
                                                     ]
                                                 }
                                             ]
@@ -301,12 +316,56 @@ function updateWindowMenu() {
                         });
                     }
                 },
-                //{
-                //    label: 'Recarregar Modulo',
-                //    click: () => {
-                //        // should open a modal
-                //    },
-                //},
+                {
+                    label: 'Reload Module',
+                    click: () => {
+                        spaManager.requestModal({
+                            title: 'Open Module with VS Code',
+                            body: {
+                                tag: 'div', class: 'row', children:
+                                    [
+                                        {
+                                            tag: 'div', class: 'col-12 form-group', children: [
+                                                { tag: 'label', text: 'Open Module' },
+                                                {
+                                                    tag: 'select', name: 'ddlModule', class: 'form-select', children: [
+                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; }),
+                                                        ...moduleManager.getResumeOfFailtToLoad().map(x => { return { tag: 'option', value: x, text: x }; }),
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                    ]
+                            },
+                            footer: [
+                                { role: 'modal-dismiss' },
+                                { tag: 'button', type: 'button', id: 'btn-open', class: 'btn btn-success', text: 'Open' },
+                            ],
+                            on: (event, origin, data) => {
+                                if (origin == 'btn-open') {
+                                    if (!data.ddlModule) {
+                                        event.response('Module not found.');
+                                        return;
+                                    }
+
+                                    // should reload only this module
+                                    moduleManager.stopModule(data.ddlModule);
+
+                                    updateTrayMenu();
+                                    updateWindowMenu();
+
+                                    loadMainPage();
+                                    setTimeout(() => {
+                                        moduleManager.loadModule(data.ddlModule);
+                                        updateTrayMenu();
+                                        updateWindowMenu();
+                                    }, 1000);
+                                    event.response(true);
+                                }
+                            }
+                        });
+                    },
+                },
                 {
                     label: 'Reload All Modules',
                     click: () => {
@@ -314,6 +373,7 @@ function updateWindowMenu() {
                         moduleManager.stopAllModules();
                         updateTrayMenu();
                         updateWindowMenu();
+                        loadMainPage();
                         setTimeout(() => {
                             moduleManager.loadModules();
                             updateTrayMenu();
