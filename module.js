@@ -6,9 +6,11 @@ const { PythonToJSMask, checkPythonEnv } = require('./modulePy');
 const { Page, setLastPage } = require('./spaManager');
 const { log } = require('./logger.js');
 
+let modulesPath = path.join(__dirname, "..", "modules");
+
 function getModuleDirectory() {
-    if (!fs.existsSync(path.join(__dirname, "..", "modules"))) fs.mkdirSync(path.join(__dirname, "..", "modules"));
-    return path.join(__dirname, "..", "modules");
+    if (!fs.existsSync(modulesPath)) fs.mkdirSync(modulesPath);
+    return modulesPath;
 }
 
 function loadPage(cm) {
@@ -111,6 +113,7 @@ class CustomModule {
                             const dependencies = fs.readFileSync(requirementsFile).toString().split('\n');
                             const pack = JSON.parse(fs.readFileSync(packageFile).toString());
                             dependencies.forEach(dep => {
+                                if(dep.trim() != '')
                                 if (!pack.dependencies[dep]) {
                                     log(`Installing ${dep}...`);
                                     execSync(`npm install ${dep}`, { stdio: 'inherit', cwd: pluginDir });
@@ -145,6 +148,7 @@ class CustomModule {
                                 execSync(`npm install ${toInstall}`, { stdio: 'inherit', cwd: this.directory });
                                 continue;
                             }
+                            break;
                         }
                     }
                     
