@@ -13,22 +13,29 @@ function loadModules() {
 
     fs.readdirSync(currentDir).forEach(item => {
         if (path.extname(item) != '' || item == 'venv') return;
-        log(`Loading module [${item}]`);
 
-        const cm = new CustomModule(item, path.join(currentDir, item));
-
-        cm.load();
-
-        if (cm.hasFailed()) {
-            listFailedModules.push(cm);
-            return;
-        }
-
-        listModules.push(cm);
-
-        cm.init();
+        loadModule(item);
     });
 
+}
+
+function loadModule(name) {
+    log(`Loading module [${name}]`);
+
+    const currentDir = getModuleDirectory();
+
+    const cm = new CustomModule(name, path.join(currentDir, name));
+
+    cm.load();
+
+    if (cm.hasFailed()) {
+        listFailedModules.push(cm);
+        return;
+    }
+
+    listModules.push(cm);
+
+    cm.init();
 }
 
 function forEachModule(func) {
@@ -38,7 +45,7 @@ function forEachModule(func) {
     }
 }
 
-function getModule(name){
+function getModule(name) {
     return listModules.find(x => x.name == name);
 }
 
@@ -68,6 +75,22 @@ function getMainMenu() {
     return menu;
 }
 
+function stopModule(name) {
+    const module = listModules.find(x => x.name == name);
+    if (!module) {
+        return false;
+    }
+    const index = listModules.indexOf(module);
+    if (index == -1) {
+        return false;
+    }
+
+    module.unload();
+    listModules.splice(index, 1);
+
+    return true;
+}
+
 function stopAllModules() {
     const l = listModules.length;
     for (let i = 0; i < l; i++) {
@@ -87,7 +110,7 @@ function process() {
     forEachModule((cm) => { cm.eachSecond(); });
 }
 
-function getModulesName(){
+function getModulesName() {
     let modules = [];
     forEachModule((cm) => { modules.push(cm.name); });
     return modules;
@@ -128,4 +151,6 @@ module.exports = {
     createTemplate,
     getModulesName,
     getModule,
+    loadModule,
+    stopModule,
 };
