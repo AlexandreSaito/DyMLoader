@@ -27,6 +27,10 @@ class Page {
         win.webContents.send('page-html', { id: this.id, parentQuery: parentQuery, clearBeforeRender: clearBeforeRender ?? true, html: typeof fileOrHtml == 'string' && fs.existsSync(fileOrHtml) ? fs.readFileSync(fileOrHtml).toString() : fileOrHtml })
     }
 
+    changeHtml(parentQuery, { clearBeforeRender, html }) {
+        win.webContents.send('page-html-change', { id: this.id, parentQuery: parentQuery, clearBeforeRender: clearBeforeRender ?? true, html: html })
+    }
+
     renderTable(parentQuery, table) {
 
     }
