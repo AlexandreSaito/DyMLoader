@@ -37,7 +37,7 @@ function addEventListener(element, event) {
             if (!current) return;
             let match = current.filter(x => e.target.matches(x)).map(x => {
                 const selector = e.target.type == 'checkbox' || e.target.type == 'radio' ? element.querySelectorAll(x) : [e.target];
-                const data =  selector[0].dataset;
+                const data = selector[0].dataset;
                 return { name: x, dataset: data, value: selector.length == 1 ? (selector[0].type == 'checkbox' ? selector[0].checked : selector[0].value ?? selector[0].selected) : selector[0].type == 'radio' ? (() => { let val = null; selector.forEach(y => { if (y.checked) { val = y.value } }); return val; })() : '' }
             });
             //console.log(match);
@@ -101,6 +101,21 @@ window.addEventListener('DOMContentLoaded', () => {
         element.append(...html.children);
     });
 
+    api.on('page-html-change', (e, args) => {
+        if (args.id != mainHtml.getAttribute('module-page')) {
+            console.log('page-html was called before its time');
+            return;
+        }
+        const element = mainHtml.querySelector(args.parentQuery);
+        if (!element) {
+            console.log('page-html element to append not found');
+            return;
+        }
+
+        console.log(args);
+        if(args.html.text) element.innerText = args.html.text;
+    })
+
     api.on('page-request-data', (e, args) => {
         if (args.id != mainHtml.getAttribute('module-page')) {
             console.log('page-request-data was called before its time');
@@ -110,7 +125,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         let data = {};
         for (let i = 0; i < args.queryElements.length; i++) {
-            data = {...data, ...getFormAsData(mainHtml, args.queryElements[i])}
+            data = { ...data, ...getFormAsData(mainHtml, args.queryElements[i]) }
         }
 
         api.send('page-data', { id: args.id, requestId: args.requestId, data: data });
