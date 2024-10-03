@@ -272,6 +272,56 @@ function updateWindowMenu() {
                     },
                 },
                 {
+                    label: 'Reload Module',
+                    click: () => {
+                        spaManager.requestModal({
+                            title: 'Select to reaload!',
+                            body: {
+                                tag: 'div', class: 'row', children:
+                                    [
+                                        {
+                                            tag: 'div', class: 'col-12 form-group', children: [
+                                                { tag: 'label', text: 'Open Module' },
+                                                {
+                                                    tag: 'select', name: 'ddlModule', class: 'form-select', children: [
+                                                        ...moduleManager.getResumeOfFailtToLoad().map(x => { return { tag: 'option', value: x, text: x }; }),
+                                                        ...moduleManager.getModulesName().reverse().map(x => { return { tag: 'option', value: x, text: x }; }),
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                    ]
+                            },
+                            footer: [
+                                { role: 'modal-dismiss' },
+                                { tag: 'button', type: 'button', id: 'btn-open', class: 'btn btn-success', text: 'Reload' },
+                            ],
+                            on: (event, origin, data) => {
+                                if (origin == 'btn-open') {
+                                    if (!data.ddlModule) {
+                                        event.response('Module not found.');
+                                        return;
+                                    }
+
+                                    // should reload only this module
+                                    moduleManager.stopModule(data.ddlModule);
+
+                                    updateTrayMenu();
+                                    updateWindowMenu();
+
+                                    loadMainPage();
+                                    setTimeout(() => {
+                                        moduleManager.loadModule(data.ddlModule);
+                                        updateTrayMenu();
+                                        updateWindowMenu();
+                                    }, 1000);
+                                    event.response(true);
+                                }
+                            }
+                        });
+                    },
+                },
+                {
                     label: 'Open Module with VS Code',
                     click: () => {
                         spaManager.requestModal({
@@ -284,8 +334,8 @@ function updateWindowMenu() {
                                                 { tag: 'label', text: 'Open Module' },
                                                 {
                                                     tag: 'select', name: 'ddlModule', class: 'form-select', children: [
-                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; }),
                                                         ...moduleManager.getResumeOfFailtToLoad().map(x => { return { tag: 'option', value: x, text: x }; }),
+                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; }),
                                                     ]
                                                 }
                                             ]
@@ -315,56 +365,6 @@ function updateWindowMenu() {
                             }
                         });
                     }
-                },
-                {
-                    label: 'Reload Module',
-                    click: () => {
-                        spaManager.requestModal({
-                            title: 'Open Module with VS Code',
-                            body: {
-                                tag: 'div', class: 'row', children:
-                                    [
-                                        {
-                                            tag: 'div', class: 'col-12 form-group', children: [
-                                                { tag: 'label', text: 'Open Module' },
-                                                {
-                                                    tag: 'select', name: 'ddlModule', class: 'form-select', children: [
-                                                        ...moduleManager.getModulesName().map(x => { return { tag: 'option', value: x, text: x }; }),
-                                                        ...moduleManager.getResumeOfFailtToLoad().map(x => { return { tag: 'option', value: x, text: x }; }),
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                    ]
-                            },
-                            footer: [
-                                { role: 'modal-dismiss' },
-                                { tag: 'button', type: 'button', id: 'btn-open', class: 'btn btn-success', text: 'Open' },
-                            ],
-                            on: (event, origin, data) => {
-                                if (origin == 'btn-open') {
-                                    if (!data.ddlModule) {
-                                        event.response('Module not found.');
-                                        return;
-                                    }
-
-                                    // should reload only this module
-                                    moduleManager.stopModule(data.ddlModule);
-
-                                    updateTrayMenu();
-                                    updateWindowMenu();
-
-                                    loadMainPage();
-                                    setTimeout(() => {
-                                        moduleManager.loadModule(data.ddlModule);
-                                        updateTrayMenu();
-                                        updateWindowMenu();
-                                    }, 1000);
-                                    event.response(true);
-                                }
-                            }
-                        });
-                    },
                 },
                 {
                     label: 'Reload All Modules',
