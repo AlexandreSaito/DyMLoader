@@ -26,12 +26,10 @@ function loadPage(cm) {
 }
 
 class Plugin {
-    constructor(){
+    constructor() {
         this.templates = [];
-    }
 
-    log(data){
-        log(data);
+        this.log = log;
     }
 
 }
@@ -52,14 +50,14 @@ class CustomModule {
         //this.openWithVSCode();
     }
 
-    openWithVSCode(){
+    openWithVSCode() {
         exec(`cd /d ${this.directory} & code .`, (error, stdout, stderr) => {
-            if(error){
+            if (error) {
                 log('Error', error.message);
                 return;
             }
 
-            if(stderr){
+            if (stderr) {
                 log('Stderr', stderr);
             }
 
@@ -107,40 +105,40 @@ class CustomModule {
                 try {
                     const requirementsFile = path.join(this.directory, 'requirements.txt');
                     const packageFile = path.join(this.directory, 'package.json');
-                    if(fs.existsSync(requirementsFile)){
-                        try{
+                    if (fs.existsSync(requirementsFile)) {
+                        try {
                             const pluginDir = this.directory;
                             const dependencies = fs.readFileSync(requirementsFile).toString().split('\n');
                             const pack = JSON.parse(fs.readFileSync(packageFile).toString());
                             dependencies.forEach(dep => {
-                                if(dep.trim() != '')
-                                if (!pack.dependencies[dep]) {
-                                    log(`Installing ${dep}...`);
-                                    execSync(`npm install ${dep}`, { stdio: 'inherit', cwd: pluginDir });
-                                } else {
-                                    log(`${dep} is already installed.`);
-                                }
+                                if (dep.trim() != '')
+                                    if (!pack.dependencies[dep]) {
+                                        log(`Installing ${dep}...`);
+                                        execSync(`npm install ${dep}`, { stdio: 'inherit', cwd: pluginDir });
+                                    } else {
+                                        log(`${dep} is already installed.`);
+                                    }
                             });
-                        }catch(e){
+                        } catch (e) {
                             log(e);
                         }
                     }
 
                     let mod = undefined;
-                    while(mod == undefined){
-                        try{
+                    while (mod == undefined) {
+                        try {
                             mod = require(mainFilePath);
-                        }catch(e){
+                        } catch (e) {
                             log(e);
-                            if(e.code == 'MODULE_NOT_FOUND') {
-                                if(!e.message.startsWith('Cannot find module')){
+                            if (e.code == 'MODULE_NOT_FOUND') {
+                                if (!e.message.startsWith('Cannot find module')) {
                                     this.fails.push({ message: e.message });
                                     return;
                                 }
                                 let f = e.message.indexOf("'") + 1;
                                 let l = e.message.indexOf("'", f);
                                 const toInstall = e.message.substr(f, l - f);
-                                if(toInstall.startsWith('/') || toInstall.startsWith('\\') || toInstall.startsWith('.')){
+                                if (toInstall.startsWith('/') || toInstall.startsWith('\\') || toInstall.startsWith('.')) {
                                     this.fails.push({ message: e.message });
                                     return;
                                 }
@@ -151,8 +149,8 @@ class CustomModule {
                             break;
                         }
                     }
-                    
-                    if(!mod){
+
+                    if (!mod) {
                         this.fails.push({ message: 'Something has gone wrong when loading module!' });
                         return;
                     }
@@ -222,8 +220,22 @@ class CustomModule {
         this.beforeQuit();
 
         if (!this.isAsync) {
-            delete require.cache[path.join(this.directory, this.mainFile)];
+            const unloadFolder = (folder) => {
+                fs.readdirSync(folder).forEach(item => {
+                    if (item == 'venv' || item == 'node_modules') return;
+                    if (path.extname(item) == '') {
+                        unloadFolder(path.join(folder, item));
+                        return;
+                    }
+
+                    delete require.cache[path.join(folder, item)];
+                });
+            }
+
+            //delete require.cache[path.join(this.directory, this.mainFile)];
+            unloadFolder(this.directory);
         }
+
         delete this.module;
     }
 
