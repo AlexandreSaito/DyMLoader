@@ -21,20 +21,16 @@ function loadModules() {
 
 function loadModule(name) {
     log(`Loading module [${name}]`);
-
     const currentDir = getModuleDirectory();
-
     const cm = new CustomModule(name, path.join(currentDir, name));
 
     cm.load();
-
     if (cm.hasFailed()) {
         listFailedModules.push(cm);
         return;
     }
 
     listModules.push(cm);
-
     cm.init();
 }
 
