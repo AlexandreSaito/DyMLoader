@@ -1,7 +1,7 @@
 
 let win: any = null;
 
-function log(...args: any)  {
+export function log(...args: any)  {
     const stack = new Error().stack?.split("at ")?? [];
     const stackItem = stack[stack.length > 1 ? 2 : 1];
 
@@ -24,15 +24,14 @@ function log(...args: any)  {
     }
 }
 
-function logProcess(...args: any) {
+export function logProcess(...args: any) {
     console.log('\r\n----/----');
     for (let arg of args) {
         console.log(typeof arg == 'object' ? JSON.stringify(arg) : arg);
     }
 }
 
-function setLoggerWindow(window: any) {
+export function setLoggerWindow(window: any) {
     win = window;
-}
+} 
 
-module.exports = { log, logProcess, setLoggerWindow }

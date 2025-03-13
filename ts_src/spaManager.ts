@@ -1,41 +1,64 @@
-const fs = require('fs');
-const { ipcMain } = require('electron');
-const { log } = require('./_logger.js');
+import fs from 'fs';
+import { ipcMain, BrowserWindow } from 'electron';
+import { log } from './logger';
+import { CustomHTMLObject, CustomModalObject, CustomModalHandler } from './htmlInterface';
 
-let win;
-let lastPage;
+let win: BrowserWindow;
+let lastPage: Page;
 
-let currentPage = null;
-let modalHandler = {};
+let currentPage: Page | null = null;
+let modalHandler: Record<string, null | ModalHandler> = {};
 let modalId = 1;
 
+interface ModalHandler {
+    on?: undefined | null | CustomModalHandler
+}
+
+interface PageLoadType {
+    filePath?: string,
+    html?: string | CustomHTMLObject;
+}
+
+interface PageEventHandler {
+    (param1: string, param2: number): boolean;
+}
+
 class Page {
-    constructor(id, title, mainHtml) {
+    id: string;
+    currentDataRequest: number;
+    dataRequest: any;
+    events: any;
+    reload: null | Function;
+    doneLoading?: null | Function;
+
+    constructor(id: string, title: string, mainHtml: string) {
+        this.id = id;
+        this.currentDataRequest = 1;
+        this.dataRequest = {};
+        this.events = {};
+        this.reload = () => loadPage(id, title, { filePath: mainHtml });
+
         if (currentPage && currentPage.id == id) {
             return;
         }
         this.id = id;
         currentPage = this;
         loadPage(id, title, { filePath: mainHtml });
-        this.reload = () => loadPage(id, title, { filePath: mainHtml });
-        this.currentDataRequest = 1;
-        this.dataRequest = {};
-        this.events = {};
     }
 
-    loadHtml(parentQuery, { clearBeforeRender, fileOrHtml }) {
+    loadHtml(parentQuery: string, { clearBeforeRender, fileOrHtml }: { clearBeforeRender: boolean, fileOrHtml: string | CustomHTMLObject }) {
         win.webContents.send('page-html', { id: this.id, parentQuery: parentQuery, clearBeforeRender: clearBeforeRender ?? true, html: typeof fileOrHtml == 'string' && fs.existsSync(fileOrHtml) ? fs.readFileSync(fileOrHtml).toString() : fileOrHtml })
     }
 
-    changeHtml(parentQuery, { html }) {
+    changeHtml(parentQuery: string, { html }: { html: CustomHTMLObject }) {
         win.webContents.send('page-html-change', { id: this.id, parentQuery: parentQuery, clearBeforeRender: true, html: html })
     }
 
-    renderTable(parentQuery, table) {
+    renderTable(parentQuery: string, table: CustomHTMLObject) {
 
     }
 
-    addEventListener(event, query, func) {
+    addEventListener(event: string, query: string, func: PageEventHandler) {
         if (!this.events[event]) this.events[event] = {};
         if (!this.events[event][query]) this.events[event][query] = [];
         ;
@@ -44,13 +67,13 @@ class Page {
         win.webContents.send('page-register-event', { id: this.id, event, query });
     }
 
-    getData(queryElements, func, customId) {
+    getData(queryElements: string, func: Function, customId: number) {
         const requestId = customId ? customId : this.currentDataRequest++;
         this.dataRequest[requestId] = func;
         win.webContents.send('page-request-data', { id: this.id, requestId: requestId, queryElements });
     }
 
-    modal({ title, body, footer, on }){
+    modal({ title, body, footer, on }: CustomModalObject) {
         requestModal({ title: title, body: body, footer: footer, on: on });
     }
 
@@ -113,35 +136,35 @@ ipcMain.on('modal-action', (e, data) => {
     const handler = modalHandler[data.id];
 
     const actions = {
-        response: (r) => { win.webContents.send('modal-response', { id: data.id, data: r }); },
+        response: (r: any) => { win.webContents.send('modal-response', { id: data.id, data: r }); },
     };
 
-    handler.on(actions, data.origin, data.data);
+    if (handler && handler.on) handler.on(actions, data.origin, data.data);
 
     if (data.origin == 'event-close') delete modalHandler[data.id];
 });
 
-function setWindow(window) {
+function setWindow(window: BrowserWindow) {
     win = window;
 
     return currentPage;
 }
 
-function hasPageLoaded(){
+function hasPageLoaded() {
     return lastPage != null && lastPage != undefined;
 }
 
-function setLastPage(page) { lastPage = page; }
+function setLastPage(page: Page) { lastPage = page; }
 
-function loadPage(id, title, { filePath, html }) {
-    win.webContents.send('load-page', { moduleName: id, title: title, html: html ? html : fs.readFileSync(filePath).toString() });
+function loadPage(id: string, title: string, { filePath, html }: PageLoadType) {
+    win.webContents.send('load-page', { moduleName: id, title: title, html: html ? html : filePath ? fs.readFileSync(filePath).toString() : "" });
 }
 
 function loadLastPage() {
     if (lastPage && lastPage.reload) lastPage.reload();
 }
 
-function requestModal({ title, body, footer, on }) {
+function requestModal({ title, body, footer, on }: CustomModalObject) {
     const id = modalId++;
 
     modalHandler[id] = {

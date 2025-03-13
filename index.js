@@ -5,9 +5,9 @@ const path = require('node:path');
 
 const moduleManager = require('./moduleManager.js');
 const { getModuleDirectory } = require('./module.js');
-const spaManager = require('./spaManager.js');
+const spaManager = require('./ts_dist/spaManager.js');
 const { log, setLoggerWindow } = require('./ts_dist/logger.js');
-const config = require('./configuration.js');
+const config = require('./ts_dist/configuration.js');
 
 //const { GlobalKeyboardListener } = require("node-global-key-listener")
 //const v = new GlobalKeyboardListener();

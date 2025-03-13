@@ -3,8 +3,8 @@ const fs = require('node:fs');
 const { exec, execSync } = require('child_process');
 
 const { PythonToJSMask, checkPythonEnv } = require('./modulePy');
-const { Page, setLastPage } = require('./spaManager');
-const { log } = require('./_logger.js');
+const { Page, setLastPage } = require('./ts_dist/spaManager.js');
+const { log } = require('./ts_dist/logger.js');
 
 let modulesPath = path.join(__dirname, "..", "modules");
 
