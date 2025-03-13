@@ -8,6 +8,9 @@ const { log } = require('./logger.js');
 
 let modulesPath = path.join(__dirname, "..", "modules");
 
+const eventsByPlugin = {};
+const events = {};
+
 function getModuleDirectory() {
     if (!fs.existsSync(modulesPath)) fs.mkdirSync(modulesPath);
     return modulesPath;
@@ -26,10 +29,41 @@ function loadPage(cm) {
 }
 
 class Plugin {
-    constructor() {
+    constructor(name) {
+        this.name = name;
         this.templates = [];
 
         this.log = log;
+    }
+
+    registerGlobalEvent(pluginName, eventName, event) {
+        if (!eventsByPlugin[this.name]) eventsByPlugin[this.name] = [];
+        if (!events[pluginName]) events[pluginName] = {};
+        if (!events[pluginName][eventName]) events[pluginName][eventName] = [];
+
+        eventsByPlugin[this.name].push({ pluginName: pluginName, eventName: eventName, event: event });
+        events[pluginName][eventName].push(event);
+    }
+
+    unloadGlobalEvent() {
+        if (!eventsByPlugin[this.name]) return;
+
+        for (let i = 0; i < eventsByPlugin[this.name].length; i++) {
+            const event = eventsByPlugin[this.name][i];
+
+            const index = events[event.pluginName][event.eventName].indexOf(event.event);
+            if (index > -1) { events[event.pluginName][event.eventName].splice(index, 1); }
+        }
+
+        delete eventsByPlugin[this.name];
+    }
+
+    call(eventName, ...params) {
+        if(!events[this.name] || !events[this.name][eventName]) return;
+        for (let i = 0; i < events[this.name][eventName].length; i++) {
+            const event = events[this.name][eventName][i];
+           event(...params); 
+        }
     }
 
 }
@@ -146,7 +180,6 @@ class CustomModule {
                                 execSync(`npm install ${toInstall}`, { stdio: 'inherit', cwd: this.directory });
                                 continue;
                             }
-                            break;
                         }
                     }
 
@@ -154,7 +187,7 @@ class CustomModule {
                         this.fails.push({ message: 'Something has gone wrong when loading module!' });
                         return;
                     }
-                    const plugin = new Plugin();
+                    const plugin = new Plugin(this.name);
                     mod.getPlugin(plugin);
                     this.module = plugin;
                     this.module.log = log;
@@ -236,6 +269,7 @@ class CustomModule {
             unloadFolder(this.directory);
         }
 
+        if(this.module.unloadGlobalEvent) this.module.unloadGlobalEvent();
         delete this.module;
     }
 
