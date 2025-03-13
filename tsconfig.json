@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "outDir": "./ts_dist",
+    "rootDir": "./ts_src",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "noEmit": false
+  },
+  "include": [
+    "ts_src/**/*.ts",
+    "index.js"
+, "index.js"  ],
+  "exclude": [
+    "**/*.js",
+    "node_modules"  // Exclui node_modules
+  ]
+}

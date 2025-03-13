@@ -4,7 +4,7 @@ const { exec, execSync } = require('child_process');
 
 const { PythonToJSMask, checkPythonEnv } = require('./modulePy');
 const { Page, setLastPage } = require('./spaManager');
-const { log } = require('./logger.js');
+const { log } = require('./_logger.js');
 
 let modulesPath = path.join(__dirname, "..", "modules");
 

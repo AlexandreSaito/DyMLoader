@@ -1,7 +1,7 @@
 const path = require('node:path')
 const fs = require('node:fs');
 const { spawn } = require('child_process');
-const { log } = require('./logger.js');
+const { log } = require('./_logger.js');
 
 const { getModuleDirectory, CustomModule } = require('./module');
 

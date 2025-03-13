@@ -2,7 +2,7 @@ const path = require('node:path')
 const fs = require('node:fs');
 const { app } = require('electron');
 const { spawn } = require('child_process');
-const { log, logProcess } = require('./logger.js');
+const { log, logProcess } = require('./_logger.js');
 
 let processes = [];
 let pyMainProcess = null;

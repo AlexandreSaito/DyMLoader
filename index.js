@@ -4,9 +4,9 @@ const windowStateKeeper = require('electron-window-state');
 const path = require('node:path');
 
 const moduleManager = require('./moduleManager.js');
-const { getModuleDirectory } = require('./module');
+const { getModuleDirectory } = require('./module.js');
 const spaManager = require('./spaManager.js');
-const { log, setLoggerWindow } = require('./logger.js');
+const { log, setLoggerWindow } = require('./ts_dist/logger.js');
 const config = require('./configuration.js');
 
 //const { GlobalKeyboardListener } = require("node-global-key-listener")

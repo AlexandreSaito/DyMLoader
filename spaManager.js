@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { ipcMain } = require('electron');
-const { log } = require('./logger.js');
+const { log } = require('./_logger.js');
 
 let win;
 let lastPage;
