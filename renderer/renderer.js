@@ -38,7 +38,8 @@ function addEventListener(element, event) {
             let match = current.filter(x => e.target.matches(x)).map(x => {
                 const selector = e.target.type == 'checkbox' || e.target.type == 'radio' ? element.querySelectorAll(x) : [e.target];
                 const data = selector[0].dataset;
-                return { name: x, dataset: data, value: selector.length == 1 ? (selector[0].type == 'checkbox' ? selector[0].checked : selector[0].value ?? selector[0].selected) : selector[0].type == 'radio' ? (() => { let val = null; selector.forEach(y => { if (y.checked) { val = y.value } }); return val; })() : '' }
+                const value = selector.length == 1 ? (selector[0].type == 'checkbox' ? selector[0].checked : selector[0].value ?? selector[0].selected) : selector[0].type == 'radio' ? (() => { let val = null; selector.forEach(y => { if (y.checked) { val = y.value } }); return val; })() : '';
+                return { name: x, dataset: data, value: value }
             });
             //console.log(match);
             api.send('page-event', { id: mainHtml.getAttribute('module-page'), event: event, matches: match, value: null });
@@ -114,6 +115,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         console.log(args);
         if(args.html.text) element.innerText = args.html.text;
+        if(args.html.html) element.innerHTML = args.html.html;
     })
 
     api.on('page-request-data', (e, args) => {
