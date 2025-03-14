@@ -26,8 +26,8 @@ interface PageEventHandler {
 class Page {
     id: string;
     currentDataRequest: number;
-    dataRequest: any;
-    events: any;
+    dataRequest: Record<string, Function>;
+    events: Record<string, Record<string, Array<PageEventHandler>>>;
     reload: null | Function;
     doneLoading?: null | Function;
 
