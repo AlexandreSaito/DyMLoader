@@ -14,8 +14,8 @@ export function log(...args: any)  {
         return;
     }
 
+    console.log(`\r\n[${new Date().toISOString()}] LOG -//-`);
     if (stackItem) {
-        console.log('\r\n----/----');
         console.log(stackItem.trim());
     }
     for (let arg of args) {
@@ -25,7 +25,7 @@ export function log(...args: any)  {
 }
 
 export function logProcess(...args: any) {
-    console.log('\r\n----/----');
+    console.log(`\r\n[${new Date().toISOString()}] LOG PROCESS -//-`);
     for (let arg of args) {
         console.log(typeof arg == 'object' ? JSON.stringify(arg) : arg);
     }
