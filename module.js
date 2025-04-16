@@ -2,7 +2,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 const { exec, execSync } = require('child_process');
 
-const { PythonToJSMask, checkPythonEnv } = require('./modulePy');
+const { PythonToJSMask, checkPythonEnv } = require('./ts_dist/modulePy.js');
 const { Page, setLastPage } = require('./ts_dist/spaManager.js');
 const { log } = require('./ts_dist/logger.js');
 
