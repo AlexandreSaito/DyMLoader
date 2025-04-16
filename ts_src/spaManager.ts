@@ -2,6 +2,7 @@ import fs from 'fs';
 import { ipcMain, BrowserWindow } from 'electron';
 import { log } from './logger';
 import { CustomHTMLObject, CustomModalObject, CustomModalHandler } from './htmlInterface';
+import { PageLoadType, PageEventHandler, IPage } from './pageInterface';
 
 let win: BrowserWindow;
 let lastPage: Page;
@@ -14,16 +15,7 @@ interface ModalHandler {
     on?: undefined | null | CustomModalHandler
 }
 
-interface PageLoadType {
-    filePath?: string,
-    html?: string | CustomHTMLObject;
-}
-
-interface PageEventHandler {
-    (param1: string, param2: number): boolean;
-}
-
-class Page {
+class Page implements IPage {
     id: string;
     currentDataRequest: number;
     dataRequest: Record<string, Function>;
